@@ -13,7 +13,7 @@
 
 
 
-<title>如果有两个长得很像的类，还有很像的逻辑 | Hexo</title>
+<title>List.of 和 new ArrayList() | Hexo</title>
 
 
 
@@ -131,7 +131,7 @@
     
     <article class="post-wrap">
         <header class="post-header">
-            <h1 class="post-title">如果有两个长得很像的类，还有很像的逻辑</h1>
+            <h1 class="post-title">List.of 和 new ArrayList()</h1>
             
                 <div class="post-meta">
                     
@@ -140,7 +140,7 @@
 
                     
                         <span class="post-time">
-                        Date: <a href="#">August 20, 2023&nbsp;&nbsp;10:34:08</a>
+                        Date: <a href="#">August 31, 2023&nbsp;&nbsp;15:35:46</a>
                         </span>
                     
                     
@@ -156,9 +156,13 @@
         </header>
 
         <div class="post-content">
-            <p>说实话我都不知道当初为什么没想到，果然深夜不适合写代码（但下次还敢</p>
-<p>代码内容也不敢乱放，大概总结下来就是要把逻辑放到各自的类下，这样读最外层的时候会更清晰</p>
-<p><img src="/../asset/image-20230820103733237.jpg" alt="image-20230820103733237"></p>
+            <p><strong><code>List.of</code></strong> 是 Java 9 中引入的静态工厂方法，用于创建一个不可变的列表。这意味着一旦创建，列表的内容是固定的，无法进行添加、删除或修改元素的操作。如果尝试修改这个列表，会抛出 <strong><code>UnsupportedOperationException</code></strong> 异常。这个方法的主要目的是创建一个简洁的不可变列表。</p>
+<p><strong><code>new ArrayList()</code></strong> 是使用构造函数来创建一个可变的 <strong><code>ArrayList</code></strong> 实例。这个列表是可变的，您可以向其中添加、删除和修改元素。这种列表适用于需要频繁修改内容的场景。</p>
+<p>总结：</p>
+<ul>
+<li><strong><code>List.of</code></strong> 创建的列表是不可变的，内容不可修改。</li>
+<li><strong><code>new ArrayList()</code></strong> 创建的列表是可变的，可以进行添加、删除和修改操作。</li>
+</ul>
 
         </div>
 
@@ -192,7 +196,7 @@
                 <span class="tag">
                     
                     
-                        <a href="/tags/refactor/"># refactor</a>
+                        <a href="/tags/spring/"># spring</a>
                     
                         
                 </span>
@@ -205,10 +209,10 @@
         </section>
         <section class="post-nav">
             
-                <a class="prev" rel="prev" href="/2023/08/24/%E7%8E%A9%E4%B8%80%E4%B8%8Bstream%E7%B3%BB%E5%88%97%20-%E3%80%901%E3%80%91%E4%B8%AD%E9%97%B4%E6%93%8D%E4%BD%9C&%E7%BB%88%E6%AD%A2%E6%93%8D%E4%BD%9C/">玩一下stream系列 -【1】中间操作&终止操作</a>
+                <a class="prev" rel="prev" href="/2023/08/31/%E7%8E%A9%E4%B8%80%E4%B8%8Bstream%E7%B3%BB%E5%88%97%20-%E3%80%902%E3%80%91sorted/">玩一下stream系列 -【2】sorted</a>
             
             
-            <a class="next" rel="next" href="/2023/08/20/%E6%97%A0%E8%AE%BA%E5%A6%82%E4%BD%95%E9%83%BD%E4%BC%9A%E6%9C%89%E4%B8%A4%E4%B8%AA%E5%BE%AA%E7%8E%AF+%E4%B8%80%E4%B8%AA%E5%88%A4%E6%96%AD/">无论如何都会有两个循环+一个判断</a>
+            <a class="next" rel="next" href="/2023/08/24/%E7%8E%A9%E4%B8%80%E4%B8%8Bstream%E7%B3%BB%E5%88%97%20-%E3%80%901%E3%80%91%E4%B8%AD%E9%97%B4%E6%93%8D%E4%BD%9C&%E7%BB%88%E6%AD%A2%E6%93%8D%E4%BD%9C/">玩一下stream系列 -【1】中间操作&终止操作</a>
             
         </section>
 

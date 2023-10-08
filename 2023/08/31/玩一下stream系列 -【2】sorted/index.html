@@ -13,7 +13,7 @@
 
 
 
-<title>Hello World | Hexo</title>
+<title>玩一下stream系列 -【2】sorted | Hexo</title>
 
 
 
@@ -196,7 +196,7 @@
     
     <article class="post-wrap">
         <header class="post-header">
-            <h1 class="post-title">Hello World</h1>
+            <h1 class="post-title">玩一下stream系列 -【2】sorted</h1>
             
                 <div class="post-meta">
                     
@@ -205,14 +205,14 @@
 
                     
                         <span class="post-time">
-                        Date: <a href="#">June 18, 2023&nbsp;&nbsp;10:08:54</a>
+                        Date: <a href="#">August 31, 2023&nbsp;&nbsp;15:42:09</a>
                         </span>
                     
                     
                         <span class="post-category">
                     Category:
                             
-                                <a href="/categories/test/">test</a>
+                                <a href="/categories/%E5%B0%8F%E7%99%BD%E9%83%BD%E6%98%AF%E8%BF%99%E4%B9%88%E6%88%90%E9%95%BF%E8%B5%B7%E6%9D%A5%E7%9A%84%EF%BC%88%E7%A1%AE%E4%BF%A1/">小白都是这么成长起来的（确信</a>
                             
                         </span>
                     
@@ -221,19 +221,17 @@
         </header>
 
         <div class="post-content">
-            <p>Welcome to <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a target="_blank" rel="noopener" href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a target="_blank" rel="noopener" href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a target="_blank" rel="noopener" href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
+            <h2 id="二次排序"><a href="#二次排序" class="headerlink" title="二次排序"></a>二次排序</h2><p>如果不好写Comparator 又要基于两个属性排序的时候，呵呵还真就会出现，集成的时候两边对接的数据不完全一样，而业务又希望排序。</p>
+<p>eg，比如我想要优先按照type去排序，</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">    List&lt;ItemTest&gt; list1 = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;();</span><br><span class="line">    list1.add(<span class="keyword">new</span> <span class="title class_">ItemTest</span>(<span class="number">1</span>,<span class="number">1</span>));</span><br><span class="line">    list1.add(<span class="keyword">new</span> <span class="title class_">ItemTest</span>(<span class="number">2</span>,<span class="number">1</span>));</span><br><span class="line">    list1.add(<span class="keyword">new</span> <span class="title class_">ItemTest</span>(<span class="number">3</span>,<span class="number">1</span>));</span><br><span class="line">    list1.add(<span class="keyword">new</span> <span class="title class_">ItemTest</span>(<span class="number">1</span>,<span class="number">2</span>));</span><br><span class="line">    list1.add(<span class="keyword">new</span> <span class="title class_">ItemTest</span>(<span class="number">2</span>,<span class="number">2</span>));</span><br><span class="line">    list1.add(<span class="keyword">new</span> <span class="title class_">ItemTest</span>(<span class="number">3</span>,<span class="number">2</span>));</span><br><span class="line">    <span class="type">var</span> <span class="variable">collect</span> <span class="operator">=</span> list1.stream()</span><br><span class="line">			  .sorted(comparing(ItemTest::getSequence))</span><br><span class="line">				.sorted(comparing(ItemTest::getType))</span><br><span class="line">        .collect(toList());</span><br><span class="line">    collect.forEach(it -&gt; System.out.println(it.getSequence() + <span class="string">&quot;-&quot;</span> + it.getType()));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@AllArgsConstructor</span></span><br><span class="line"><span class="meta">@Getter</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">class</span> <span class="title class_">ItemTest</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> Integer sequence;</span><br><span class="line">    <span class="keyword">private</span> Integer type;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/writing.html">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+<p>结果</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1</span><span class="number">-1</span></span><br><span class="line"><span class="number">2</span><span class="number">-1</span></span><br><span class="line"><span class="number">3</span><span class="number">-1</span></span><br><span class="line"><span class="number">1</span><span class="number">-2</span></span><br><span class="line"><span class="number">2</span><span class="number">-2</span></span><br><span class="line"><span class="number">3</span><span class="number">-2</span></span><br></pre></td></tr></table></figure>
 
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/server.html">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
+<p>如果换个sort，type在前，sequence在后，输出结果就是</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1</span><span class="number">-1</span></span><br><span class="line"><span class="number">1</span><span class="number">-2</span></span><br><span class="line"><span class="number">2</span><span class="number">-1</span></span><br><span class="line"><span class="number">2</span><span class="number">-2</span></span><br><span class="line"><span class="number">3</span><span class="number">-1</span></span><br><span class="line"><span class="number">3</span><span class="number">-2</span></span><br></pre></td></tr></table></figure>
 
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
+<p>结论：哪个权重大，哪个放后面</p>
 
         </div>
 
@@ -267,7 +265,7 @@
                 <span class="tag">
                     
                     
-                        <a href="/tags/test/"># test</a>
+                        <a href="/tags/spring/"># spring</a>
                     
                         
                 </span>
@@ -280,8 +278,10 @@
         </section>
         <section class="post-nav">
             
-                <a class="prev" rel="prev" href="/2023/06/18/image-test/">image test</a>
+                <a class="prev" rel="prev" href="/2023/09/26/%E5%85%B3%E4%BA%8E%E6%89%BE%E4%B8%8D%E5%88%B0-kube%E8%BF%99%E4%BB%B6%E4%BA%8B/">关于找不到.kube这件事</a>
             
+            
+            <a class="next" rel="next" href="/2023/08/31/List-of-%E5%92%8C-new-ArrayList/">List.of 和 new ArrayList()</a>
             
         </section>
 
