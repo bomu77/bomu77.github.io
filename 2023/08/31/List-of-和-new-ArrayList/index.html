@@ -163,6 +163,9 @@
 <li><strong><code>List.of</code></strong> 创建的列表是不可变的，内容不可修改。</li>
 <li><strong><code>new ArrayList()</code></strong> 创建的列表是可变的，可以进行添加、删除和修改操作。</li>
 </ul>
+<p><strong>为什么要知道这个东西呢？</strong></p>
+<p>因为在写remove这种需要把某个东西排出去的时候，这时候用<code>List.of</code>就会报错。</p>
+<p>如果没记错，上次报错就是因为返回的是Collectors.<em>toList</em>()，然后找了好久的错，才知道根本原因是这个。</p>
 
         </div>
 
