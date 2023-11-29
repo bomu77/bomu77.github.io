@@ -13,7 +13,7 @@
 
 
 
-<title>React-反向代理 | Hexo</title>
+<title>【white-night-library 2】跨域问题&amp;反向代理 | Hexo</title>
 
 
 
@@ -196,7 +196,7 @@
     
     <article class="post-wrap">
         <header class="post-header">
-            <h1 class="post-title">React-反向代理</h1>
+            <h1 class="post-title">【white-night-library 2】跨域问题&amp;反向代理</h1>
             
                 <div class="post-meta">
                     
@@ -205,14 +205,14 @@
 
                     
                         <span class="post-time">
-                        Date: <a href="#">November 20, 2023&nbsp;&nbsp;16:14:29</a>
+                        Date: <a href="#">November 22, 2023&nbsp;&nbsp;17:49:31</a>
                         </span>
                     
                     
                         <span class="post-category">
                     Category:
                             
-                                <a href="/categories/FontEnd/">FontEnd</a>
+                                <a href="/categories/white-night-library/">white-night-library</a>
                             
                         </span>
                     
@@ -221,53 +221,45 @@
         </header>
 
         <div class="post-content">
-            <p>早晚会遇到的问题：本地开发前后端都没问题，两边的数据传递也没问题，第一以项目的形式跑起来的话，大概率会遇到这种报错</p>
+            <h2 id="跨域"><a href="#跨域" class="headerlink" title="跨域"></a>跨域</h2><p>先说说跨域问题是什么，非完全科班出身（比如我）在正式启前后端服务的时候，就会冷不丁发现这么个鬼问题：</p>
 <figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Access to XMLHttpRequest <span class="built_in">at</span> &#x27;http://localhost:<span class="number">8080</span>/xx&#x27; from origin &#x27;http://localhost:<span class="number">8888</span>&#x27; has been blocked by CORS policy: No &#x27;Access-Control-Allow-Orgin&#x27; header is present on the requested resource</span><br></pre></td></tr></table></figure>
 
-<p>这就是跨域问题，简单地说，当浏览器进行跨域请求的时候，数据是获取到了的（如果用postman会发现可以顺利获取），但浏览器会检测这是跨域（not my local url）的，就把这部分数据拦截了。</p>
-<p>有一些解决方案：</p>
+<p>这并不是程序本身的问题，其实是浏览器的“锅”。</p>
+<p>为什么保护用户的数据安全，浏览有一个安全策略叫同源策略（Same-Origin Policy）意思是，如果 JavaScript 尝试访问另一个不同源的资源时会阻止访问。</p>
+<p>那么这个不同源怎么定义呢？</p>
+<ul>
+<li>域名不同：例如在访问 <code>domain1.com</code> 的页面试图去请求 <code>domain2.com</code> 的资源。</li>
+<li>端口不同：当在 <code>domain.com:8080</code> 的页面尝试请求 <code>domain.com:3000</code> 的资源。</li>
+<li>协议不同：比如在 <code>http://domain.com</code> 的页面试图请求 <code>https://domain.com</code> 的资源。</li>
+</ul>
+<p>为了解决这个问题呢，我们可以通过 CORS（跨源资源共享）设置服务器响应头，允许特定的跨域请求。也可以使用代理服务器。</p>
+<p>white-night-library用的就是代理</p>
+<h2 id="Ngnix-代理"><a href="#Ngnix-代理" class="headerlink" title="Ngnix 代理"></a>Ngnix 代理</h2><p>由于我买的服务器安装的宝塔，宝塔好像默认Ngnix，就讲讲Ngnix。不过大多大同小异，一通百通。</p>
+<p>很多网上的教程会说，加上配置就可以了。</p>
+<p>但也不说为啥啊！</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">    listen 3000;</span><br><span class="line">    server_name localhost;</span><br><span class="line"></span><br><span class="line">    location /api &#123;</span><br><span class="line">        proxy_pass http://localhost:3777;</span><br><span class="line">        proxy_set_header Host $host:3000;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>先说说这个配置的意思吧，既然我们理解了跨域的问题就在于源（域名+端口）不同（都是你写的程序，很难协议不同，就无视这个条件）</p>
+<p>那么假如我们的前端服务在<code>localhost:3000</code>，后端服务在<code>localhost:3777</code>。那可不就是不同吗？</p>
+<p>所以呢，大家的思路是，存在一个第三方端口，既运行着前端，又代替前端服务拿到后端数据且返回给前端。</p>
+<p>也因此，很多博客会这么写</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">      # nginx监听</span><br><span class="line">      listen       80;</span><br><span class="line">      server_name  127.0.0.1;</span><br><span class="line">      # 这是前端</span><br><span class="line">      location / &#123;</span><br><span class="line">          proxy_pass http://localhost:3000;</span><br><span class="line">      &#125;</span><br><span class="line">      # 这是发送到后端的请求</span><br><span class="line">      location /api/ &#123;</span><br><span class="line">          proxy_pass http://localhost:3777;</span><br><span class="line">      &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这个意思说，当我在浏览器输入127.0.0.1:80是可以访问到前端页面的，也同时，后端的数据也会发送到80的端口上。</p>
+<p>但是呢！有没有一种可能，你前端没办法改动，或者不想改动。所以还有一种方案，就是上面提到的：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">    listen 3000;</span><br><span class="line">    server_name localhost;</span><br><span class="line"></span><br><span class="line">    location /api &#123;</span><br><span class="line">        proxy_pass http://localhost:3777;</span><br><span class="line">        proxy_set_header Host $host:3000;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>因为你前端服务已经起在3000上了，那么把后端的数据放到前端的端口上，在前端的port上拿数据，在一个路径下就不存在跨域问题了</p>
+<p>怎么验证成没成呢？</p>
+<p>假如你向后端拿数据是<code>http://localhost:3777/api/data</code>，如果在浏览器里输入<code>http://localhost:3000/api/data</code>也能拿到数据，说明代理成功了</p>
+<p>（然后就会403）</p>
+<h2 id="Cross-解决跨域"><a href="#Cross-解决跨域" class="headerlink" title="Cross 解决跨域"></a>Cross 解决跨域</h2><p>所以跨域不光存在前端的问题，还存在后端的问题？</p>
+<p>两种方式，第一种不一定好使，等我有时间查查为啥</p>
 <ol>
-<li><p>网上会说修改浏览器配置，这个在你访问别人的页面的时候可以这样操作，一个对外开放的平台要所有用户都重新设置一下浏览器不是扯蛋呢嘛。</p>
-</li>
-<li><p>后端加个<code>CorsConfiguration</code></p>
-<p>当然会有更多人说加个 <code>@CrossOrigin</code> 的注解，但如果controller很多的话，就很麻烦了。而且不知道为啥在我这里没有生效</p>
-<p>更粗暴的解决方案是加个<code>CorsConfiguration</code> 的配置类</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">CorsConfiguration</span> <span class="keyword">implements</span> <span class="title class_">WebMvcConfigurer</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">addCorsMappings</span><span class="params">(CorsRegistry registry)</span>&#123;</span><br><span class="line">        registry.addMapping(<span class="string">&quot;/**&quot;</span>)</span><br><span class="line">                .allowedOriginPatterns(<span class="string">&quot;*&quot;</span>)</span><br><span class="line">                .allowedMethods(<span class="string">&quot;GET&quot;</span>, <span class="string">&quot;posT&quot;</span>, <span class="string">&quot;PuT&quot;</span>,<span class="string">&quot;DELETE&quot;</span>,<span class="string">&quot;HEAD&quot;</span>,<span class="string">&quot;OPTIONS&quot;</span>)</span><br><span class="line">                .allowCredentials(<span class="literal">true</span>)</span><br><span class="line">                .maxAge(<span class="number">3600</span>) <span class="comment">//1hour内不再询问</span></span><br><span class="line">                .allowedHeaders(<span class="string">&quot;*&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>实操可行</p>
-</li>
-<li><p>前端反向代理</p>
-</li>
+<li>在Controller类上加上<code>@CrossOrigin</code>注解即可，</li>
+<li>如果加注解不好使，就在家个参数，比如</li>
 </ol>
-<p>​		比较正规的解决方案是实现反向代理。到这里别忘了我们为什么要实现反向代理，为了解决跨域，你浏览器不是说这请求不安全嘛，那我请个代理帮我取。</p>
-<h2 id="反向代理"><a href="#反向代理" class="headerlink" title="反向代理"></a>反向代理</h2><p>​	在配置反向代理这里，我吃到了教训：<strong>不要看一传十十传百的blog，直接取看官网</strong></p>
-<p>​	我左右琢磨着为啥出错，结果官网写的清清楚楚明明白白。</p>
-<blockquote>
-<p>link在此：<a target="_blank" rel="noopener" href="https://create-react-app.dev/docs/proxying-api-requests-in-development/">https://create-react-app.dev/docs/proxying-api-requests-in-development/</a></p>
-</blockquote>
-<p>​	总结下来，有两种方案：</p>
-<h3 id="方案一"><a href="#方案一" class="headerlink" title="方案一"></a>方案一</h3><p>​	直接在 <code>package.json</code> 中添加一个 <code>proxy</code> 字段</p>
-<p>​	但这个方法有点局限，它仅在开发中有效，就是。。额，临时性的</p>
-<blockquote>
-<p>Keep in mind that <code>proxy</code> only has effect in development (with <code>npm start</code>)</p>
-</blockquote>
-<h3 id="方案二"><a href="#方案二" class="headerlink" title="方案二"></a>方案二</h3><p>​	第二种就是配置文件了</p>
-<p>​	先下载个这</p>
-<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install http-proxy-middleware --save</span><br></pre></td></tr></table></figure>
-
-<p>​	然后在src下创建一个<code>setupProxy.js</code></p>
-<p>​	嗯，用ts的我幻想了一下能不能用ts，但是一个git上的老哥逗笑了我</p>
-<blockquote>
-<p> “I think we just don’t support setupProxy being written in anything but JS?”</p>
-</blockquote>
-<p>​	fine，js就js</p>
-<p>​	然后复制官网的这个内容就可以了</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> &#123; createProxyMiddleware &#125; = <span class="built_in">require</span>(<span class="string">&#x27;http-proxy-middleware&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="variable language_">module</span>.<span class="property">exports</span> = <span class="keyword">function</span>(<span class="params">app</span>) &#123;</span><br><span class="line">  app.<span class="title function_">use</span>(</span><br><span class="line">    <span class="string">&#x27;/api&#x27;</span>,</span><br><span class="line">    <span class="title function_">createProxyMiddleware</span>(&#123;</span><br><span class="line">      <span class="attr">target</span>: <span class="string">&#x27;http://localhost:5000&#x27;</span>,</span><br><span class="line">      <span class="attr">changeOrigin</span>: <span class="literal">true</span>,</span><br><span class="line">    &#125;)</span><br><span class="line">  );</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<p>然后run的时候可以看到</p>
-<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt; react-scripts <span class="built_in">start</span></span><br><span class="line"></span><br><span class="line">[HPM] Proxy created: /  -&gt; http://localhost:<span class="number">5000</span></span><br></pre></td></tr></table></figure>
-
-<p>皆大欢喜，你成功了</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@CrossOrigin(methods = &#123;RequestMethod.POST，RequestMethod.GET&#125;)</span></span><br></pre></td></tr></table></figure>
 
         </div>
 
@@ -301,7 +293,7 @@
                 <span class="tag">
                     
                     
-                        <a href="/tags/react/"># react</a>
+                        <a href="/tags/ngnix/"># ngnix</a>
                     
                         
                 </span>
@@ -314,10 +306,10 @@
         </section>
         <section class="post-nav">
             
-                <a class="prev" rel="prev" href="/2023/11/22/Nginx%E5%90%AF%E5%8A%A8%E5%89%8D%E7%AB%AF%E6%9C%8D%E5%8A%A1%E5%AD%90%E9%A1%B5%E9%9D%A2404%E9%97%AE%E9%A2%98/">Nginx启动前端服务子页面404问题</a>
+                <a class="prev" rel="prev" href="/2023/11/27/%E3%80%90Java%20%E5%B9%B6%E5%8F%91%E3%80%91%E7%BA%BF%E7%A8%8B%E5%BD%92%E6%A0%B9%E7%BB%93%E5%BA%95%E9%83%BD%E6%98%AFrun()%E5%87%BA%E6%9D%A5%E7%9A%84/">【Java 并发】线程归根结底都是run()出来的</a>
             
             
-            <a class="next" rel="next" href="/2023/11/20/%E3%80%90white-night-library-1%E3%80%91%E9%83%A8%E7%BD%B2%E6%9C%8D%E5%8A%A1%E8%AE%B0%E5%BD%95/">【white-night-library 1】部署服务记录</a>
+            <a class="next" rel="next" href="/2023/11/22/Nginx%E5%90%AF%E5%8A%A8%E5%89%8D%E7%AB%AF%E6%9C%8D%E5%8A%A1%E5%AD%90%E9%A1%B5%E9%9D%A2404%E9%97%AE%E9%A2%98/">Nginx启动前端服务子页面404问题</a>
             
         </section>
 
