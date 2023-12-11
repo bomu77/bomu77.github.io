@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Bomu">
+
+
+
+
+
+<title>【white-night-library 3】登陆系统之Keycloak | Hexo</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Bomu&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Bomu&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">【white-night-library 3】登陆系统之Keycloak</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Bomu</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">December 4, 2023&nbsp;&nbsp;10:46:06</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/white-night-library/">white-night-library</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>其实一开始选的SSO不是keycloak，但是那些开源的我折腾了好久，始终卡在某个环节，干脆归回keycloak，真香，一行命令解决一切。</p>
+<h2 id="SSO"><a href="#SSO" class="headerlink" title="SSO"></a>SSO</h2><p>SSO是什么呢，SSO全称 Single Sign-On，是一种身份验证和授权机制，允许用户通过一次登录访问多个相关但独立的软件系统或服务。</p>
+<p>现在已经变得非常普遍了，比如你登陆一个网站的时候，人家告诉你说可以用QQ或者weChat 或者其他什么常用APP的账号登陆，就是所谓的单点登录，即一个账号走天下。</p>
+<h2 id="Keycloak-font"><a href="#Keycloak-font" class="headerlink" title="Keycloak - font"></a>Keycloak - font</h2><p>好，所以我这里选择的SSO是开源且比较成熟的keycloak</p>
+<p>官方给的教程非常到位，基本上就这一行命令</p>
+<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -p <span class="number">8080</span>:<span class="number">8080</span> -e KEYCLOAK_ADMIN=admin -e KEYCLOAK_ADMIN_PASSWORD=admin quay.io/keycloak/keycloak:<span class="number">23</span>.<span class="number">0</span>.<span class="number">1</span> <span class="built_in">start</span>-dev</span><br></pre></td></tr></table></figure>
+
+<p>其他的按照教程里的一步步来就好，整体思路就是为你自己的服务创建一个client，然后配置好前端的url就差不多了。</p>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://www.keycloak.org/getting-started/getting-started-docker">https://www.keycloak.org/getting-started/getting-started-docker</a></p>
+</blockquote>
+<p>不过还是会遇到一些小坑的，比如：兴高采烈登陆admin，发现报错</p>
+<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">We are sorry…</span><br><span class="line">HTTPS required</span><br></pre></td></tr></table></figure>
+
+<p>还好keycloak的路前人都踩烂了，几行命令解决</p>
+<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">docker exec -it &#123;containerID&#125; bash</span><br><span class="line"><span class="built_in">cd</span> /opt/jboss/keycloak/bin</span><br><span class="line">./kcadm.sh config credentials --server http://localhost:<span class="number">8080</span> --realm master --user admin</span><br><span class="line">./kcadm.sh update realms/master -s sslRequired=NONE</span><br></pre></td></tr></table></figure>
+
+<p>哦，不过我默认的地址是<code>/opt/keycloak/bin</code> </p>
+<p>另外，其实官方回复说是<code>http://localhost:8080/auth</code>，但如果用auth，还是会用https，所以要把auth去掉再设置realms</p>
+<p>上面这个步骤是，让你可以用admin访问master的client，即管理员的页面。如果你自己的服务都是http，那就还需要再将上述操作实施在自己加的realm + client上</p>
+<p>理论上应该这样对吧</p>
+<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./kcadm.sh config credentials --server http://localhost:<span class="number">8080</span> --realm yourRealm --user admin</span><br></pre></td></tr></table></figure>
+
+<p>但是会显示</p>
+<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Invalid user credentials [invalid_grant]</span><br></pre></td></tr></table></figure>
+
+<p>这是因为还没在这个realm里加上账号</p>
+<p>加好后上面那句执行成功了</p>
+<p>但是下面这句又会报错</p>
+<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">./kcadm.sh update realms/yourRealm -s sslRequired=NONE</span><br><span class="line">---</span><br><span class="line">null [unknown_error]</span><br></pre></td></tr></table></figure>
+
+<p>这是因为你的admin没有足够权限，到ui的role map那里加上这个权限<code>realm-managementrealm-admin</code>，然后就可以成功加上了</p>
+<p>这时候登陆前端页面的时候，就会自动跳转到keycloak的登陆页面</p>
+<hr>
+<h2 id="Keycloak-back"><a href="#Keycloak-back" class="headerlink" title="Keycloak - back"></a>Keycloak - back</h2><p>哎这东西可坑惨我了</p>
+<p>首先在build.gradle中加上keycloak的配置</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">//</span> <span class="string">Keycloak</span></span><br><span class="line"><span class="string">implementation(&quot;org.keycloak:keycloak-spring-boot-starter:10.0.0&quot;)</span></span><br><span class="line"><span class="string">implementation(&quot;org.keycloak:keycloak-admin-client:23.0.1&quot;)</span></span><br></pre></td></tr></table></figure>
+
+<p>接下来，keycloak是基于spring和spring security做的，所以，配置上要加上spring security</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">//</span> <span class="string">Spring</span> <span class="string">security</span></span><br><span class="line"><span class="string">implementation(&quot;org.springframework.boot:spring-boot-starter-security&quot;)</span></span><br></pre></td></tr></table></figure>
+
+<p>然后需要在application.yml中加上对应的keycloak配置，需要怎么配的话，可以登陆keycloak的admin账号，找到要链接的client，找到一个可以export的地方（每个版本入口都不太一样，所以找到一个export就好了），里面会有对应的json文件。</p>
+<p>比如我的是</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;realm&quot;</span><span class="punctuation">:</span> <span class="string">&quot;yourRealm&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;auth-server-url&quot;</span><span class="punctuation">:</span> <span class="string">&quot;http://xxxxxxxxx:8080/&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;ssl-required&quot;</span><span class="punctuation">:</span> <span class="string">&quot;none&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;resource&quot;</span><span class="punctuation">:</span> <span class="string">&quot;yourResource&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;public-client&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;verify-token-audience&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;use-resource-role-mappings&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;confidential-port&quot;</span><span class="punctuation">:</span> <span class="number">0</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>对应填写到application.yml就是这样</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">keycloak:</span><br><span class="line">  realm: yourRealm</span><br><span class="line">  auth-server-url: http://xxxxxxxxx:8080/</span><br><span class="line">  ssl-required: none</span><br><span class="line">  resource: yourResource</span><br><span class="line">  public-client: true</span><br><span class="line">  verify-token-audience: true</span><br><span class="line">  use-resource-role-mappings: true</span><br><span class="line">  confidential-port: 0</span><br></pre></td></tr></table></figure>
+
+<p>然后还得写一个配置类<code>KeycloakConfiguration</code>去继承<code>KeycloakWebSecurityConfigurerAdapter</code></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@org</span>.keycloak.adapters.springsecurity.KeycloakConfiguration</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">KeycloakConfiguration</span> <span class="keyword">extends</span> <span class="title class_">KeycloakWebSecurityConfigurerAdapter</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">String</span> <span class="variable">PROTECT_API_PATH</span> <span class="operator">=</span> <span class="string">&quot;/api/**&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">void</span> <span class="title function_">configure</span><span class="params">(HttpSecurity http)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">        <span class="comment">// common config</span></span><br><span class="line">        http</span><br><span class="line">                .authenticationProvider(keycloakAuthenticationProvider())</span><br><span class="line">                .csrf(AbstractHttpConfigurer::disable)</span><br><span class="line">                .sessionManagement((sessionManagement) -&gt; sessionManagement.sessionAuthenticationStrategy(sessionAuthenticationStrategy()))</span><br><span class="line">                .addFilterBefore(keycloakPreAuthActionsFilter(), LogoutFilter.class)</span><br><span class="line">                .addFilterBefore(keycloakAuthenticationProcessingFilter(), LogoutFilter.class)</span><br><span class="line">                .addFilterAfter(keycloakSecurityContextRequestFilter(), SecurityContextHolderAwareRequestFilter.class)</span><br><span class="line">                .addFilterAfter(keycloakAuthenticatedActionsRequestFilter(), KeycloakSecurityContextRequestFilter.class)</span><br><span class="line">                .headers((headers) -&gt;</span><br><span class="line">                        headers</span><br><span class="line">                                .contentTypeOptions(withDefaults())</span><br><span class="line">                                .xssProtection(withDefaults())</span><br><span class="line">                                .cacheControl(withDefaults())</span><br><span class="line">                                .httpStrictTransportSecurity(withDefaults())</span><br><span class="line">                                .frameOptions(withDefaults()</span><br><span class="line">                                ))</span><br><span class="line">        ;</span><br><span class="line"></span><br><span class="line">        http</span><br><span class="line">                .antMatcher(PROTECT_API_PATH)</span><br><span class="line">                .authorizeRequests()</span><br><span class="line">                .anyRequest()</span><br><span class="line">                .authenticated();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">protected</span> SessionAuthenticationStrategy <span class="title function_">sessionAuthenticationStrategy</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">RegisterSessionAuthenticationStrategy</span>(<span class="keyword">new</span> <span class="title class_">SessionRegistryImpl</span>());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>看上去一切顺利是不是，但是启动的时候有一些概率会发生KeycloakWebSecurityConfigurerAdapter（keycloak的包内类）报错。</p>
+<p>点进去会发现<code>WebSecurityConfigurerAdapter</code>爆红，根本找不到这个Adapter，上网查了查，发现Keycloak是基于这个<code>WebSecurityConfigurerAdapter</code>开发的配置，但是这东西在Spring 3 的时候被抛弃了，抛弃了，弃了，了….</p>
+<p>无奈之下，我只能降Spring到2。</p>
+<p>build一下新的spring发现可以找到<code>WebSecurityConfigurerAdapter</code>了</p>
+<p>又看上去一切顺利是不是，但启动的时候会显示你缺少Keycloak.json的文件，哦吼，我不是配置在application.yml里了吗？</p>
+<p>又翻了翻网上各种翻车记录，发现需要在Config类中增加一个方法，不然还是会默认寻找这个路径<code>keycloak.configurationFile:WEB-INF/keycloak.json</code>，于是在刚刚的<code>KeycloakConfiguration</code>里加上</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Bean</span></span><br><span class="line">KeycloakConfigResolver <span class="title function_">keycloakConfigResolver</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="comment">// 这是为了让keycloak读取application.yml中的keycloak配置</span></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">KeycloakSpringBootConfigResolver</span>();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后因为spring 降到了2，一些写法也有差异，整体上的config是这样的</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@org</span>.keycloak.adapters.springsecurity.KeycloakConfiguration</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">KeycloakConfiguration</span> <span class="keyword">extends</span> <span class="title class_">KeycloakWebSecurityConfigurerAdapter</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">String</span> <span class="variable">PROTECT_API_PATH</span> <span class="operator">=</span> <span class="string">&quot;/api/**&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">void</span> <span class="title function_">configure</span><span class="params">(HttpSecurity http)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">        <span class="comment">// common config</span></span><br><span class="line">        <span class="built_in">super</span>.configure(http);</span><br><span class="line">        http</span><br><span class="line">                .authenticationProvider(keycloakAuthenticationProvider())</span><br><span class="line">                .csrf().disable()</span><br><span class="line">                .sessionManagement()</span><br><span class="line">                .sessionAuthenticationStrategy(sessionAuthenticationStrategy())</span><br><span class="line">                .and()</span><br><span class="line">                .addFilterBefore(keycloakPreAuthActionsFilter(), LogoutFilter.class)</span><br><span class="line">                .addFilterBefore(keycloakAuthenticationProcessingFilter(), LogoutFilter.class)</span><br><span class="line">                .addFilterAfter(keycloakSecurityContextRequestFilter(), SecurityContextHolderAwareRequestFilter.class)</span><br><span class="line">                .addFilterAfter(keycloakAuthenticatedActionsRequestFilter(), KeycloakSecurityContextRequestFilter.class)</span><br><span class="line">                .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint())</span><br><span class="line">                .and()</span><br><span class="line">                .headers()</span><br><span class="line">                <span class="comment">// add header of XSS Protection</span></span><br><span class="line">                .xssProtection()</span><br><span class="line">                .and()</span><br><span class="line">                <span class="comment">// The HTTP Content-Security-Policy (CSP) script-src directive specifies valid sources for JavaScript.</span></span><br><span class="line">                .contentSecurityPolicy(<span class="string">&quot;script-src &#x27;self&#x27;&quot;</span>);</span><br><span class="line"></span><br><span class="line">        http</span><br><span class="line">                .antMatcher(PROTECT_API_PATH)</span><br><span class="line">                .authorizeRequests()</span><br><span class="line">                .anyRequest()</span><br><span class="line">                .authenticated();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">protected</span> SessionAuthenticationStrategy <span class="title function_">sessionAuthenticationStrategy</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">RegisterSessionAuthenticationStrategy</span>(<span class="keyword">new</span> <span class="title class_">SessionRegistryImpl</span>());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    KeycloakConfigResolver <span class="title function_">keycloakConfigResolver</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="comment">// 这是为了让keycloak读取application.yml中的keycloak配置</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">KeycloakSpringBootConfigResolver</span>();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>有些依赖也要降下来（好麻烦啊！</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">//</span> <span class="string">从60降到了52</span></span><br><span class="line"><span class="string">implementation(&quot;com.vladmihalcea:hibernate-types-52:2.12.1&quot;)</span> </span><br></pre></td></tr></table></figure>
+
+<p>很好，启动成功</p>
+<p>跑是跑起来了，但你快快乐乐的启动前后端，然后会发现，所有的请求接口都在报<code>java.lang.NoClassDefFoundError: java/security/acl/Group</code> </p>
+<p>Something like this:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Caused by: java.lang.ClassNotFoundException: java.security.acl.Group</span><br><span class="line">  at java.base/jdk.internal.loader.BuiltinClassLoader.loadClass(BuiltinClassLoader.java:<span class="number">602</span>) ~[na:na]</span><br><span class="line">  at java.base/jdk.internal.loader.ClassLoaders$AppClassLoader.loadClass(ClassLoaders.java:<span class="number">178</span>) ~[na:na]</span><br><span class="line">  at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:<span class="number">522</span>) ~[na:na]</span><br><span class="line">  ... <span class="number">33</span> common frames omitted</span><br></pre></td></tr></table></figure>
+
+<p>WTF!</p>
+<p>解决方法是运行的jdk降到11，我逐渐理解了为什么公司的项目所有的配置都不是最新的，原来都是为了屈就keycloak！</p>
+<p>然后，<code>Unable to authenticate using the Authorization header </code>，我已经想哭了</p>
+<p>查了很多资料都没有说法，没办法，就一步步debug，然后发现，在校验Audience的时候，list里只有account（默认的一个什么东西），所以大胆猜测是因为少了Audience</p>
+<p>跑到keycloak的设置页面，在Clients&gt;&gt;Client details&gt;&gt;Dedicated scopes&gt;&gt;Mapper details</p>
+<p>找到mapper并添加，Included Client Audience 设置好对应的client就好，然后！终于可以获取到了！！！</p>
+<p>撒花🎉🎉🎉</p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>Bomu</span>
+                    </p>
+                
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>Je sais que la douleur est la noblesse unique.</span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/sso/"># sso</a>
+                    
+                        <a href="/tags/keycloak/"># keycloak</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2023/12/07/%E3%80%90%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E3%80%91%E6%B6%88%E8%B4%B9%E8%80%85%E6%A8%A1%E5%BC%8F/">【设计模式】消费者模式</a>
+            
+            
+            <a class="next" rel="next" href="/2023/11/29/%E3%80%90Java-%E5%B9%B6%E5%8F%91%E3%80%91%E9%86%92%E9%86%92Thread%E9%87%8C%E9%9D%A2%E8%87%AA%E5%B8%A6volatile%EF%BC%8C%E4%B8%8D%E8%A6%81%E5%9C%A8%E5%A4%96%E5%B1%82%E7%BB%88%E6%AD%A2%E7%BA%BF%E7%A8%8B%E4%BA%86/">【Java 并发】醒醒Thread里面自带volatile，不要在外层终止线程了</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Bomu | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>
